@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>시우 놀이터</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<style>
+/* 시우 놀이터: 앱 타일 격자 + 부모용 주소 편집 */
+:root{
+  --bg:#E4F3EA;--ink:#1E2B37;--soft:#5A6C78;--card:#fff;--line:#C6DACE;--go:#FF8A3D;--go-d:#D8661C;--ok:#22A563;--ok-d:#17804B;
+  --display:'Jua','Apple SD Gothic Neo','Malgun Gothic',sans-serif;--body:'Gowun Dodum','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;min-height:100%}
+body{background:radial-gradient(circle at 15% 10%,#FFF6D8 0 160px,transparent 161px),radial-gradient(circle at 90% 20%,#D9EEFF 0 120px,transparent 121px),var(--bg);color:var(--ink);font-family:var(--body);padding:max(14px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) calc(130px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left));-webkit-tap-highlight-color:transparent}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+.wrap{position:relative;z-index:1;max-width:980px;margin:0 auto}
+/* 돌아다니는 카피바라 (배경) */
+#herd{position:fixed;left:0;right:0;bottom:0;height:calc(112px + env(safe-area-inset-bottom,0px));z-index:2;pointer-events:none;overflow:hidden;
+  background:radial-gradient(circle at 8% 78%,#FFD6E7 0 5px,transparent 6px),radial-gradient(circle at 23% 88%,#FFF1B8 0 5px,transparent 6px),radial-gradient(circle at 47% 82%,#fff 0 4px,transparent 5px),radial-gradient(circle at 71% 90%,#FFD6E7 0 5px,transparent 6px),radial-gradient(circle at 92% 80%,#FFF1B8 0 5px,transparent 6px),
+  linear-gradient(rgba(228,243,234,0) 0,#D3EDC9 30%,#B3DFA3 100%)}
+#herd .ground{position:absolute;left:0;right:0;top:26px;height:6px;background:repeating-linear-gradient(90deg,transparent 0 14px,rgba(95,160,70,.35) 14px 16px,transparent 16px 26px);border-radius:3px}
+.cb{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;will-change:transform}
+.cb .flip{transform-origin:50% 100%;transition:transform .25s}
+.cb.left .flip{transform:scaleX(-1)}
+.cb .body{animation:breathe 3s ease-in-out infinite;transform-origin:50% 100%}
+.cb.walk .body{animation:waddle .36s ease-in-out infinite alternate}
+.cb .leg{transform-box:fill-box;transform-origin:50% 0}
+.cb.walk .leg{animation:legA .18s ease-in-out infinite alternate}
+.cb.walk .leg.b{animation-name:legB}
+.cb.hop .body{animation:hop .5s ease-out}
+.cb .zz,.cb .eyesC{display:none}
+.cb.sleep .zz{display:block}
+.cb.sleep .eyesO{display:none}.cb.sleep .eyesC{display:inline}
+.cb.sleep .body{animation:breathe 2.2s ease-in-out infinite}
+.cb .bub{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);font-size:24px;white-space:nowrap;animation:bubUp 1.4s ease-out forwards;pointer-events:none}
+@keyframes breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.03,.97)}}
+@keyframes waddle{from{transform:rotate(-3deg) translateY(0)}to{transform:rotate(3deg) translateY(-3px)}}
+@keyframes legA{from{transform:rotate(-25deg)}to{transform:rotate(25deg)}}
+@keyframes legB{from{transform:rotate(25deg)}to{transform:rotate(-25deg)}}
+@keyframes hop{40%{transform:translateY(-26px) scale(.95,1.06)}70%{transform:translateY(0) scale(1.08,.9)}}
+@keyframes bubUp{0%{opacity:0;transform:translate(-50%,10px) scale(.5)}20%{opacity:1;transform:translate(-50%,0) scale(1.1)}100%{opacity:0;transform:translate(-50%,-30px)}}
+.zz{position:absolute;right:-6px;top:-18px;font-family:var(--display);font-size:18px;color:#7A8C99;animation:zz 2s ease-in-out infinite}
+@keyframes zz{0%{opacity:0;transform:translateY(6px)}50%{opacity:1}100%{opacity:0;transform:translateY(-14px)}}
+header{display:flex;align-items:center;gap:14px;margin:6px 0 18px}
+.logo{width:76px;height:76px;flex:none;animation:bob 2.4s ease-in-out infinite}
+.logo svg{width:100%;height:100%}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(30px,6vw,44px);margin:0;color:var(--ok-d);letter-spacing:.02em}
+.sub{margin:2px 0 0;color:var(--soft);font-size:16px}
+.gear{margin-left:auto;border:2px solid var(--line);background:#fff;border-radius:99px;padding:8px 14px;font-family:var(--display);font-size:16px;color:var(--soft)}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-3deg)}}
+.recent{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--line);border-radius:18px;padding:10px 14px;margin-bottom:16px;font-family:var(--display);font-size:18px}
+.recent button{margin-left:auto;border:none;border-radius:14px;background:var(--go);color:#fff;box-shadow:0 4px 0 var(--go-d);padding:8px 16px;font-family:var(--display);font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;border:none;border-radius:26px;padding:18px 18px 16px;background:var(--card);box-shadow:0 8px 0 var(--sh);transition:transform .12s;min-height:190px;text-decoration:none;color:inherit;overflow:hidden}
+.tile::before{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;background:var(--c);opacity:.35}
+.tile:active{transform:translateY(5px);box-shadow:0 3px 0 var(--sh)}
+.tile .ic{position:relative;width:78px;height:78px;border-radius:22px;background:var(--c);display:grid;place-items:center;font-size:46px;line-height:1;box-shadow:inset 0 -6px 0 rgba(0,0,0,.08)}
+.tile .nm{position:relative;font-family:var(--display);font-size:24px;margin-top:6px}
+.tile .ds{position:relative;color:var(--soft);font-size:15px;line-height:1.35}
+.tile .tag{position:absolute;right:14px;top:14px;font-family:var(--display);font-size:13px;background:var(--go);color:#fff;border-radius:99px;padding:2px 10px}
+.tile.missing{filter:grayscale(.8);opacity:.6}
+.tile.missing .tag{background:#9AA0A6}
+.tile:hover .ic{animation:wig .5s}
+@keyframes wig{25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+/* 편집 */
+.edit{background:#fff;border:3px dashed var(--line);border-radius:22px;padding:16px;margin-bottom:18px}
+.edit h2{font-family:var(--display);font-weight:400;font-size:22px;margin:0 0 6px}
+.edit p{margin:0 0 12px;color:var(--soft);font-size:14px;line-height:1.5}
+.erow{display:grid;grid-template-columns:52px 1fr 1.4fr 40px;gap:8px;align-items:center;margin-bottom:8px}
+.erow input{width:100%;min-width:0;border:2px solid var(--line);border-radius:12px;padding:8px 10px;background:#fff}
+.erow input.e{text-align:center;font-size:22px;padding:4px}
+.erow .del{border:none;background:#FFE3E3;border-radius:12px;height:40px}
+.ebtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.ebtns button{border:none;border-radius:14px;padding:9px 14px;font-family:var(--display);font-size:16px;background:#E3F0FD}
+.ebtns .save{background:var(--ok);color:#fff}
+.note{font-size:13px;color:var(--soft)}
+@media (max-width:560px){.logo{width:56px;height:56px}h1{font-size:28px}.sub{font-size:14px}.gear{padding:6px 10px;font-size:0}.gear::before{content:'⚙️';font-size:20px}.erow{grid-template-columns:44px 1fr 40px}.erow .u{grid-column:1/-1;order:9}.grid{grid-template-columns:repeat(2,1fr);gap:12px}.tile{min-height:170px;padding:14px}.tile .ic{width:62px;height:62px;font-size:36px}.tile .nm{font-size:19px}.tile .ds{font-size:13px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="herd" aria-hidden="true"><div class="ground"></div></div>
+<div class="wrap">
+  <header>
+    <div class="logo" aria-hidden="true"><svg viewBox="0 0 140 150"><ellipse cx="70" cy="142" rx="44" ry="6" fill="#1E2B37" opacity=".12"/><rect x="40" y="112" width="18" height="28" rx="9" fill="#7A4E28"/><rect x="82" y="112" width="18" height="28" rx="9" fill="#7A4E28"/><ellipse cx="70" cy="100" rx="48" ry="36" fill="#A8743F"/><ellipse cx="70" cy="108" rx="30" ry="22" fill="#B98552"/><ellipse cx="34" cy="34" rx="9" ry="8" fill="#7A4E28"/><ellipse cx="106" cy="34" rx="9" ry="8" fill="#7A4E28"/><rect x="26" y="30" width="88" height="66" rx="32" fill="#A8743F"/><path d="M44 54 q7 -7 14 0" stroke="#2A1A0C" stroke-width="3.6" fill="none" stroke-linecap="round"/><path d="M82 54 q7 -7 14 0" stroke="#2A1A0C" stroke-width="3.6" fill="none" stroke-linecap="round"/><circle cx="40" cy="70" r="7" fill="#FF8FA3" opacity=".55"/><circle cx="100" cy="70" r="7" fill="#FF8FA3" opacity=".55"/><rect x="48" y="60" width="44" height="32" rx="15" fill="#8A5C30"/><ellipse cx="61" cy="70" rx="3" ry="2.4" fill="#3B2412"/><ellipse cx="79" cy="70" rx="3" ry="2.4" fill="#3B2412"/><path d="M62 82 q8 6 16 0" stroke="#3B2412" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="70" cy="22" r="13" fill="#FFA62B"/><circle cx="66" cy="18" r="3.5" fill="#FFD08A"/><path d="M70 10 q7 -8 14 -3 q-7 6 -14 3z" fill="#4CAF50"/></svg></div>
+    <div><h1>시우 놀이터</h1><p class="sub">오늘은 뭐 하고 놀까?</p></div>
+    <button class="gear" id="gear">⚙️ 주소 설정</button>
+  </header>
+
+  <div class="recent" id="recent" hidden><span id="recentTxt"></span><button id="recentGo">이어서 하기 ▶</button></div>
+
+  <section class="edit" id="edit" hidden>
+    <h2>⚙️ 앱 주소 설정 (어른용)</h2>
+    <p>주소는 <code>https://didimlike365.github.io/저장소이름/파일이름.html</code> 형태로 쓰면 돼요.<br>
+       회색 타일은 아직 그 주소에 파일이 없다는 뜻이에요.</p>
+    <div id="rows"></div>
+    <div class="ebtns"><button id="add">＋ 앱 추가</button><button class="save" id="save">저장</button><button id="copy">설정 복사</button><button id="reset">처음 설정으로</button></div>
+    <p class="note" id="copyNote" hidden>복사됐어요. index.html 파일 안의 <code>DEFAULT_APPS</code> 부분을 이걸로 바꾸면 모든 기기에 똑같이 적용돼요.</p>
+  </section>
+
+  <main class="grid" id="grid"></main>
+</div>
+
+<script>
+/* 앱 목록: 주소를 고치려면 여기를 바꾸거나, 화면의 ⚙️ 주소 설정에서 바꾸면 돼요 (화면에서 바꾼 건 그 기기에만 저장) */
+const BASE='https://didimlike365.github.io/';
+const DEFAULT_APPS=[
+  {e:'🔤',n:'시우링고',d:'캐릭터랑 영어 단어 배우고 말하기',u:BASE+'siwoolingo/siwoolingo.html',c:'#BFE8CC',s:'#8FCB9F'},
+  {e:'⛺',n:'시우캠핑머지',d:'캠핑 물건을 합쳐서 더 큰 걸 만들기',u:BASE+'camping-merge/camping-merge.html',c:'#FFE1B8',s:'#F2B872'},
+  {e:'🏰',n:'시우의 요새 지키기',d:'나무 캐서 요새 키우고 악당 막기',u:BASE+'siwoo-fortress/siwoo-fortress.html',c:'#D6E6FF',s:'#9BBDF0'},
+  {e:'🧱',n:'시우의 액션블록',d:'블록 맞춰서 줄 없애기',u:BASE+'siwoo-action-block/siwoo-action-block.html',c:'#FFD6E7',s:'#F09BBE'},
+  {e:'🧩',n:'쿼리도',d:'벽 세워서 먼저 건너편 가기',u:BASE+'quoridor/quoridor.html',c:'#E6DBFF',s:'#B9A3E3'},
+  {e:'🎹',n:'피아노',d:'건반 눌러서 노래 연습',u:BASE+'playing-piano/index.html',c:'#FFF1B8',s:'#E8CF63'}
+];
+const KEY='siwoo-home-v2';
+let st={apps:null,last:null};
+try{const r=localStorage.getItem(KEY);if(r)st=Object.assign(st,JSON.parse(r))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+const apps=()=>st.apps||DEFAULT_APPS;
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+
+/* 효과음 (첫 터치 후) */
+let ac;function tone(f,t,d,g=.12){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),v=ac.createGain(),s=ac.currentTime+t;o.type='triangle';o.frequency.value=f;v.gain.setValueAtTime(0,s);v.gain.linearRampToValueAtTime(g,s+.02);v.gain.exponentialRampToValueAtTime(.001,s+d);o.connect(v).connect(ac.destination);o.start(s);o.stop(s+d+.05)}catch(e){}}
+
+function render(){
+  const A=apps();
+  $('#grid').innerHTML=A.map((a,i)=>`<a class="tile" href="${esc(a.u)}" data-i="${i}" style="--c:${a.c||'#E3F0FD'};--sh:${a.s||'#B9D6F2'}"><span class="ic">${esc(a.e||'⭐')}</span><span class="nm">${esc(a.n)}</span><span class="ds">${esc(a.d||'')}</span>${st.last===a.u?'<span class="tag">최근</span>':''}</a>`).join('');
+  const l=A.find(a=>a.u===st.last);
+  $('#recent').hidden=!l;if(l){$('#recentTxt').textContent=`${l.e} 최근에 한 놀이: ${l.n}`;$('#recentGo').onclick=()=>go(l.u)}
+  check();
+}
+function go(u){st.last=u;save();tone(660,0,.08);tone(990,.07,.12);setTimeout(()=>location.href=u,140)}
+$('#grid').addEventListener('click',e=>{const t=e.target.closest('.tile');if(!t)return;e.preventDefault();t.animate?.([{transform:'scale(1)'},{transform:'scale(.94)'},{transform:'scale(1.03)'}],{duration:160});go(t.getAttribute('href'))});
+/* 주소에 실제로 파일이 있는지 확인해서 없으면 회색으로 (GitHub Pages에 올렸을 때만) */
+function check(){
+  if(location.protocol==='file:')return;
+  document.querySelectorAll('.tile').forEach(t=>{const u=t.getAttribute('href');if(/^https?:/.test(u)&&!u.startsWith(location.origin))return;
+    fetch(u,{method:'HEAD',cache:'no-store'}).then(r=>{if(!r.ok){t.classList.add('missing');if(!t.querySelector('.tag'))t.insertAdjacentHTML('beforeend','<span class="tag">준비 중</span>')}}).catch(()=>{})});
+}
+/* 부모용 주소 편집 */
+function rows(A){$('#rows').innerHTML=A.map((a,i)=>`<div class="erow" data-i="${i}"><input class="e" value="${esc(a.e||'')}" aria-label="그림"><input class="n" value="${esc(a.n)}" aria-label="이름"><input class="u" value="${esc(a.u)}" aria-label="주소"><button class="del" aria-label="삭제">🗑️</button></div>`).join('')}
+function readRows(){return [...document.querySelectorAll('.erow')].map(r=>{const i=+r.dataset.i,base=(window._edit||[])[i]||{};return {...base,e:r.querySelector('.e').value.trim(),n:r.querySelector('.n').value.trim(),u:r.querySelector('.u').value.trim()}}).filter(a=>a.n&&a.u)}
+$('#gear').onclick=()=>{const ed=$('#edit');ed.hidden=!ed.hidden;if(!ed.hidden){window._edit=JSON.parse(JSON.stringify(apps()));rows(window._edit)}};
+$('#rows').addEventListener('click',e=>{const b=e.target.closest('.del');if(!b)return;window._edit=readRows();window._edit.splice(+b.parentElement.dataset.i,1);rows(window._edit)});
+$('#add').onclick=()=>{window._edit=readRows();window._edit.push({e:'⭐',n:'새 놀이',d:'',u:'',c:'#E3F0FD',s:'#B9D6F2'});rows(window._edit);document.querySelector('.erow:last-child .n').select()};
+$('#save').onclick=()=>{st.apps=readRows();save();render();$('#edit').hidden=true;tone(880,0,.1)};
+$('#reset').onclick=()=>{st.apps=null;save();window._edit=JSON.parse(JSON.stringify(DEFAULT_APPS));rows(window._edit);render()};
+$('#copy').onclick=()=>{const t='const DEFAULT_APPS='+JSON.stringify(readRows(),null,1)+';';const done=()=>$('#copyNote').hidden=false;
+  if(navigator.clipboard)navigator.clipboard.writeText(t).then(done).catch(()=>prompt('복사해서 쓰세요',t));else prompt('복사해서 쓰세요',t)};
+render();
+
+/* ===== 배경 카피바라 가족: 걷다가 멈추고, 귤 먹고, 졸고, 아기는 엄마를 졸졸 ===== */
+function capySide(baby){
+  return `<svg viewBox="0 0 170 125" width="100%" height="100%"><g class="body">
+  <ellipse cx="84" cy="118" rx="58" ry="6" fill="#1E2B37" opacity=".1"/>
+  <g class="leg a"><rect x="40" y="84" width="14" height="24" rx="7" fill="#7A4E28"/></g><g class="leg b"><rect x="60" y="86" width="14" height="22" rx="7" fill="#6B4423"/></g>
+  <g class="leg b"><rect x="100" y="84" width="14" height="24" rx="7" fill="#7A4E28"/></g><g class="leg a"><rect x="118" y="86" width="14" height="22" rx="7" fill="#6B4423"/></g>
+  <ellipse cx="82" cy="66" rx="60" ry="32" fill="#A8743F"/><ellipse cx="78" cy="76" rx="40" ry="16" fill="#B98552"/>
+  <rect x="104" y="30" width="54" height="48" rx="22" fill="#A8743F"/><rect x="134" y="44" width="28" height="32" rx="13" fill="#8A5C30"/>
+  <ellipse cx="152" cy="52" rx="2.6" ry="2" fill="#3B2412"/><ellipse cx="114" cy="30" rx="7" ry="6" fill="#7A4E28"/>
+  <g class="eyesO"><circle cx="128" cy="45" r="3.6" fill="#2A1A0C"/><circle cx="129.2" cy="43.8" r="1.2" fill="#fff"/></g>
+  <path class="eyesC" d="M123 46 q5 4 10 0" stroke="#2A1A0C" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <circle cx="128" cy="60" r="5" fill="#FF8FA3" opacity=".55"/><path d="M146 66 q5 4 10 0" stroke="#3B2412" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+  ${baby?`<path d="M126 26 q-2 -10 4 -14" stroke="#3E9B54" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="134" cy="10" rx="7" ry="4" fill="#5CC46F" transform="rotate(-20 134 10)"/>`
+        :`<circle cx="128" cy="22" r="11" fill="#FFA62B"/><circle cx="125" cy="19" r="3" fill="#FFD08A"/><path d="M128 11 q6 -7 12 -3 q-6 5 -12 3z" fill="#4CAF50"/>`}
+  </g></svg><span class="zz">z z</span>`;
+}
+(function(){
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,herd=document.getElementById('herd');
+  const W=()=>innerWidth,H=()=>herd.clientHeight||112;
+  const defs=innerWidth<600?[{w:96},{w:58,baby:0},{w:84},{w:50,baby:2}]:[{w:110},{w:92},{w:58,baby:0},{w:86},{w:52,baby:3}];
+  const C=defs.map((d,i)=>{const el=document.createElement('div');el.className='cb';el.style.width=d.w+'px';el.style.height=d.w*125/170+'px';
+    el.innerHTML=`<div class="flip">${capySide(d.baby!==undefined)}</div>`;herd.appendChild(el);
+    const c={el,w:d.w,h:d.w*125/170,follow:d.baby,x:Math.random()*(W()-d.w),y:0,tx:0,ty:0,state:'idle',until:0,left:Math.random()<.5,speed:35+Math.random()*30};
+    c.y=pickY(c);c.tx=c.x;c.ty=c.y;return c});
+  // 아래쪽 풀밭 위주로, 가끔 위쪽 여백에도
+  // 화면 아래 풀밭 띠 안에서만 (타일을 가리지 않게)
+  function pickY(c){return Math.max(2,H()-c.h-4-Math.random()*14)}
+  function say(c,t){const b=document.createElement('span');b.className='bub';b.textContent=t;c.el.appendChild(b);setTimeout(()=>b.remove(),1400)}
+  function setState(c,s,ms){c.state=s;c.until=performance.now()+ms;c.el.classList.toggle('walk',s==='walk');c.el.classList.toggle('sleep',s==='sleep')}
+  function next(c){
+    if(c.follow!==undefined)return;
+    const r=Math.random();
+    if(r<.55){c.tx=Math.random()*(W()-c.w);c.ty=pickY(c);setState(c,'walk',20000)}
+    else if(r<.7){setState(c,'sleep',4000+Math.random()*4000)}
+    else if(r<.85){setState(c,'idle',1500+Math.random()*1500);say(c,Math.random()<.5?'🍊':'🌿')}
+    else{setState(c,'idle',1200+Math.random()*2000);c.left=!c.left}
+  }
+  C.forEach(c=>{c.el.addEventListener('click',()=>{
+    c.el.classList.remove('hop');void c.el.offsetWidth;c.el.classList.add('hop');setState(c,'idle',1200);
+    say(c,['❤️','😆','💕','🎵','✨'][Math.floor(Math.random()*5)]);
+    try{tone(1100,0,.06,.1);tone(1500,.06,.08,.1)}catch(e){}
+  });next(c)});
+  let last=performance.now();
+  function frame(now){
+    const dt=Math.min(.05,(now-last)/1000);last=now;
+    for(const c of C){
+      if(c.follow!==undefined){ // 아기: 엄마 뒤를 졸졸
+        const m=C[c.follow],gap=(m.left?1:-1)*(m.w*.75);
+        c.tx=Math.max(0,Math.min(W()-c.w,m.x+gap+(m.w-c.w)/2));c.ty=m.y+m.h-c.h;
+        const dx=c.tx-c.x,dy=c.ty-c.y,d=Math.hypot(dx,dy);
+        if(m.state==='sleep'&&d<8){setState(c,'sleep',99999)}
+        else if(d>6){if(c.state!=='walk')setState(c,'walk',99999);const v=Math.min(d,(m.speed+25)*dt);c.x+=dx/d*v;c.y+=dy/d*v;if(Math.abs(dx)>2)c.left=dx<0}
+        else if(c.state!=='idle'&&m.state!=='sleep')setState(c,'idle',99999);
+      }else if(c.state==='walk'){
+        const dx=c.tx-c.x,dy=c.ty-c.y,d=Math.hypot(dx,dy);
+        if(d<3){setState(c,'idle',800+Math.random()*2000)}
+        else{const v=Math.min(d,c.speed*dt);c.x+=dx/d*v;c.y+=dy/d*v;if(Math.abs(dx)>1)c.left=dx<0}
+      }else if(now>c.until){next(c)}
+      c.el.classList.toggle('left',c.left);
+      c.el.style.transform=`translate(${c.x.toFixed(1)}px,${c.y.toFixed(1)}px)`;
+      c.el.style.zIndex=Math.round(c.y);
+    }
+    if(!reduce)requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  addEventListener('resize',()=>C.forEach(c=>{c.x=Math.min(c.x,W()-c.w);c.y=pickY(c);c.tx=c.x;c.ty=c.y}));
+})();
+</script>
+</body>
+</html>
